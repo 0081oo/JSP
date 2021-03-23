@@ -46,6 +46,7 @@ public class RandomServlet extends HttpServlet {
 		html += "<body>";
 		html += "<h1>랜덤 만들기</h1>\n";
         int rNum = rand.nextInt(100) + 1;
+        
         /* String color = "#000000"; 만든후 if에서 color만 바꿔줘서 
          * 마지막에 <h2 style=\"color: " + color + "\">" + rNum + "</h2>"; 해주면 효율적
          *  */

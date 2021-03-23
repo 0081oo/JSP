@@ -1,4 +1,4 @@
-package samp;
+package exam;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,29 +11,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class GetRandom
+ * Servlet implementation class RandomResServlet
  */
-@WebServlet("/home/random")
-public class GetRandom extends HttpServlet {
+@WebServlet("/exam/random/res")
+public class RandomResServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetRandom() {
+    public RandomResServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		Random rand = new Random();
 		
 		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=UTF-8");
+		
+		String mn = request.getParameter("mn");
+		String mx = request.getParameter("mx");
+		String rn = request.getParameter("rn");
+		
 		
 		PrintWriter out = response.getWriter();
 		
@@ -46,17 +50,11 @@ public class GetRandom extends HttpServlet {
 		html += "</head>";
 		html += "<body>";
 		html += "<h1>랜덤 만들기</h1>\n";
-		int max = Integer.parseInt(request.getParameter("max"));
-		int min = Integer.parseInt(request.getParameter("min"));
-        int rNum = rand.nextInt(max-min+1) + min; /* 최소 최댓값 포함해서 */
-        
-        response.sendRedirect("/exam/random/res?mn=" + min + "&mx=" + max + "&rn=" + rNum);
        
-        html += "<h2 style='color:#F8E119; font-size:40pt;'>"+ rNum +"</h2>";
+        html += "<h2 style='color:#F8E119; font-size:40pt;'>"+ rn +"</h2>";
 		html += "</body>";
 		html += "</html>";
 		out.println(html);
-		
 	}
 
 }
