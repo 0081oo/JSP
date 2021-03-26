@@ -31,7 +31,7 @@ public class VisitServlet extends HttpServlet {
 //		if(v != null) {
 //			System.out.println(v.getId());
 //			System.out.println(v.getAuthor());
-//			System.out.println(v.getContext());
+//			System.out.println(v.getContent());
 //			System.out.println(v.getCreate_date());
 //		} else {
 //			System.out.println("조회 결과 없음");
@@ -41,7 +41,7 @@ public class VisitServlet extends HttpServlet {
 //			for(int i = 0; i < result.size(); i++) {
 //				System.out.print("Id : " + result.get(i).getId() + " | ");
 //				System.out.print("Author : " + result.get(i).getAuthor() + " | ");
-//				System.out.print("Context : " + result.get(i).getContext() + " | ");
+//				System.out.print("Content : " + result.get(i).getContent() + " | ");
 //				System.out.println("Create Date : " + result.get(i).getCreate_date());
 //			}
 //		} else {
@@ -51,7 +51,22 @@ public class VisitServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+		request.setCharacterEncoding("UTF-8");
+		
+		// 1. 클라이언트가 전달한 파라미터 추출	
+		String author = request.getParameter("author");
+		String content = request.getParameter("content");
+		
+		// 2. 추출한 파라미터를 VisitVO 객체에 저장
+		VisitVO data =  new VisitVO(author, content);
+		
+		// 3. VisitDAO를 생성후 2번에서 만든 VisitVO를 저장하기 위해 전달후 저장
+		VisitDAO visit = new VisitDAO();
+		visit.saveData(data);
+		visit.close();
+		
+		// 4. 저장 완료후 localhost:8080/home2/visit 을 다시 요청하도록 클라이언트에 리다이렉트 메시지전달
+		response.sendRedirect("./visit");
 	}
 
 }

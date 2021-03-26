@@ -9,24 +9,31 @@
 </head>
 <body>
 	<h1>방명록</h1>
-	<form action="./visit" method="post">
-	
+	<form action="./visit" method="post"><br>
+		<input type="text" name="author" placeholder="작성자" required><br>
+		<textarea name="content" required></textarea><br>
+		<button type="submit">작성</button><br>
 	</form>
-	
+	<hr>
 	<table border="1">
 		<tr>
 			<th>번호</th>
 			<th>내용</th>
 			<th>작성자</th>
 			<th>작성일</th>
+			<th></th>
 		</tr>
 		<% ArrayList<VisitVO> result = (ArrayList<VisitVO>)request.getAttribute("result");
 			for(VisitVO data: result) {%>
 			<tr>
 				<td><%=data.getId() %></td>
-				<td><%=data.getContext() %></td>
+				<td><%=data.getContent() %></td>
 				<td><%=data.getAuthor() %></td>
 				<td><%=data.getCreate_date() %></td>
+				<td><form action="./delete" method="post">
+					<input type="hidden" name="id" value= "<%=data.getId() %>" readonly>
+					<button type="submit">삭제</button>
+				</form></td>
 			</tr>
 		<% } %>
 	</table>

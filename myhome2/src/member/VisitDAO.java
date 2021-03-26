@@ -11,6 +11,22 @@ public class VisitDAO {
 		this.connect();
 	}
 	
+	public int saveData(VisitVO data) {
+		int result = 0;
+		String sql = "";
+		sql += "INSERT INTO visit_t(id, author, content, create_date)";
+		sql += "VALUES (visit_seq.NEXTVAL, '" + data.getAuthor() + "' , '" + data.getContent()+ "' , SYSDATE)";
+		
+		try {
+			// 저장이 됐는지 안됐는지 확인하기 위한 목적
+			result = this.stat.executeUpdate(sql); // 삭제처리 완료되면 1반환
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	// id가 일치하는 하나의 레코드만 가져온다
 	public VisitVO getRecord(int id) {
 		// SQL 질의 작성
@@ -24,7 +40,7 @@ public class VisitDAO {
 			
 			if(res.next()) {
 				v = new VisitVO(res.getInt("id"),res.getString("author"),
-						res.getString("context"),res.getDate("create_date"));
+						res.getString("content"),res.getDate("create_date"));
 			}
 
 			res.close();
@@ -52,7 +68,7 @@ public class VisitDAO {
 			
 			while(res.next()) {
 				v = new VisitVO(res.getInt("id"),res.getString("author"),
-						res.getString("context"),res.getDate("create_date"));
+						res.getString("content"),res.getDate("create_date"));
 				records.add(v);
 			}
 
@@ -62,6 +78,21 @@ public class VisitDAO {
 		}
 		
 		return records;
+	}
+	
+	public int deleteData(int id) {
+		int result = 0; // 저장이 됐는지 안됐는지 확인하기 위한 목적
+		String sql = "";
+		sql += "DELETE FROM visit_t";
+		sql += " WHERE id = " + id; // WHERE 앞 띄어쓰기 필수
+		
+		try {
+			result = this.stat.executeUpdate(sql); // 삭제 완료되면 1 반환
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	private void connect() {
