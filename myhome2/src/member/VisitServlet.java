@@ -3,6 +3,7 @@ package member;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +24,10 @@ public class VisitServlet extends HttpServlet {
 		ArrayList<VisitVO> result = visit.getAll(); // 전체출력
 		visit.close();
 		
+		request.setAttribute("result", result);
+		RequestDispatcher dp = request.getRequestDispatcher("/WEB-INF/visit.jsp");
+		dp.forward(request, response);
+		
 //		if(v != null) {
 //			System.out.println(v.getId());
 //			System.out.println(v.getAuthor());
@@ -32,16 +37,16 @@ public class VisitServlet extends HttpServlet {
 //			System.out.println("조회 결과 없음");
 //		}
 		
-		if(result != null) {
-			for(int i = 0; i < result.size(); i++) {
-				System.out.print("Id : " + result.get(i).getId() + " | ");
-				System.out.print("Author : " + result.get(i).getAuthor() + " | ");
-				System.out.print("Context : " + result.get(i).getContext() + " | ");
-				System.out.println("Create Date : " + result.get(i).getCreate_date());
-			}
-		} else {
-			System.out.println("조회 결과 없음");
-		}
+//		if(result != null) {
+//			for(int i = 0; i < result.size(); i++) {
+//				System.out.print("Id : " + result.get(i).getId() + " | ");
+//				System.out.print("Author : " + result.get(i).getAuthor() + " | ");
+//				System.out.print("Context : " + result.get(i).getContext() + " | ");
+//				System.out.println("Create Date : " + result.get(i).getCreate_date());
+//			}
+//		} else {
+//			System.out.println("조회 결과 없음");
+//		}
 		
 	}
 
