@@ -10,7 +10,8 @@
 	<h1>환영합니다</h1>
 	<ul>
 		<li><a href="./gugudan">구구단</a></li>
-		<li><a href="./member?name=admin">멤버 db 연결</a></li>
+		<li><a href="./member?name=admin">Member DB 연결</a></li>
+		<li><a href="./visit?id=00000002">Visit DB 연결</a></li>
 	</ul>
 </body>
 </html>
