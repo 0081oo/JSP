@@ -95,6 +95,22 @@ public class VisitDAO {
 		return result;
 	}
 	
+	// prepareStatement? 다시 공부
+	public int updateData(VisitVO data) {
+		int result = 0;
+		String sql = "";
+		sql += "UPDATE visit_t";
+//		sql += "SET content = ?, author=? WHERE id=?";
+		sql += "SET content = " + data.getContent() + "WHERE id=" + data.getId();
+		
+		try {
+			result = this.stat.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	private void connect() {
 		try {
 			// JDBC 드라이버 로딩
