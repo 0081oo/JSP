@@ -8,21 +8,21 @@
 <title>방문록 수정</title>
 </head>
 <body>
-	<h1>방문록 수정</h1>
-	<% VisitVO data = (VisitVO)request.getAttribute("data"); %>
-	<form action="./update" method="post">
-		<div>
-			<input type="hidden" name="id" value="<%=data.getId() %>" readonly>
-		</div>
-		<div>
-			<input type="text" name="author" value="<%=data.getAuthor() %>" readonly>
-		</div>
-		<div>
-			<textarea name="context"></textarea>
-		</div>
-		<div>
-			<button type="submit">수정</button>
-		</div>
-	</form>
+    <h1>방문록 수정</h1>
+    <% VisitVO data = (VisitVO)request.getAttribute("data"); %>
+    <form action="./update" method="post">
+    	<div>
+    	    <input type="hidden" name="id" value="<%= data.getId() %>" readonly>
+    	</div>
+    	<div>
+    	    <input type="text" name="author" value="<%= data.getAuthor() %>" readonly>
+    	</div>
+        <div>
+    	    <textarea name="content"><%= data.getContent() %></textarea>
+    	</div>
+    	<div>
+    	    <button type="submit">수정</button>
+    	</div>
+    </form>
 </body>
 </html>

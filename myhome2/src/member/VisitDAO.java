@@ -5,73 +5,72 @@ import java.util.ArrayList;
 
 public class VisitDAO {
 	private Connection conn = null;
-	private Statement stat = null;
+	private PreparedStatement pstat = null;
 	
 	public VisitDAO() {
 		this.connect();
 	}
 	
-	public int saveData(VisitVO data) {
-		int result = 0;
-		String sql = "";
-		sql += "INSERT INTO visit_t(id, author, content, create_date)";
-		sql += "VALUES (visit_seq.NEXTVAL, '" + data.getAuthor() + "' , '" + data.getContent()+ "' , SYSDATE)";
-		
+	private void connect() {
 		try {
-			// 저장이 됐는지 안됐는지 확인하기 위한 목적
-			result = this.stat.executeUpdate(sql); // 삭제처리 완료되면 1반환
+			// JDBC 드라이버 로딩
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("JDBC 드라이버 로딩 완료!");
+			
+			// 접속 정보 작성
+			String url = "jdbc:oracle:thin:@localhost:1521:xe";
+			String user = "web_admin";
+			String password = "web_admin";
+			
+			// DB 접속 객체 생성 및 접속 시도
+			this.conn = DriverManager.getConnection(url, user, password);
+			System.out.println("Oracle DB 접속 완료!");
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return result;
 	}
 	
-	// id가 일치하는 하나의 레코드만 가져온다
 	public VisitVO getRecord(int id) {
-		// SQL 질의 작성
-		String sql = "SELECT * FROM visit_t WHERE id = '" + id + "'";
-		
-		// SQL 구문 작업용 개체 생성
-		VisitVO v = null;
+		String sql = "SELECT * FROM visit_t WHERE id = ?";
+		VisitVO record = null;
 		try {
-			// SQL 질의문 실행
-			ResultSet res = this.stat.executeQuery(sql);
+			this.pstat = this.conn.prepareStatement(sql);
+			this.pstat.setInt(1, id);
 			
+			ResultSet res = this.pstat.executeQuery();
 			if(res.next()) {
-				v = new VisitVO(res.getInt("id"),res.getString("author"),
-						res.getString("content"),res.getDate("create_date"));
+				record = new VisitVO(
+					res.getInt("id"), res.getString("author"),
+					res.getString(""), res.getDate("create_date")
+				);
 			}
-
 			res.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println("SQL Query Execute 완료");
-	
-		return v;
+		return record;
 	}
 	
-	// 모든 레코드 가져온다
-	public ArrayList getAll() {
-		ArrayList<VisitVO> records = new ArrayList(); 
+	public ArrayList<VisitVO> getRecords(Date date) {
+		String sql = "";
+		sql += "SELECT * FROM visit_t";
+		sql += " WHERE TO_CHAR(create_date, 'YYYY-MM-DD') = ?";
+		sql += " ORDER BY id DESC";
 		
-		// SQL 질의 작성
-		String sql = "SELECT * FROM visit_t";
-		
-		// SQL 구문 작업용 개체 생성
-		VisitVO v = null;
+		ArrayList<VisitVO> records = new ArrayList<VisitVO>();
 		try {
-			// SQL 질의문 실행
-			ResultSet res = this.stat.executeQuery(sql);
-			
+			this.pstat = this.conn.prepareStatement(sql);
+			this.pstat.setDate(1, date);
+			ResultSet res = this.pstat.executeQuery();
 			while(res.next()) {
-				v = new VisitVO(res.getInt("id"),res.getString("author"),
-						res.getString("content"),res.getDate("create_date"));
-				records.add(v);
+				records.add(new VisitVO(
+					res.getInt("id"), res.getString("author"),
+					res.getString("content"), res.getDate("create_date")
+				));
 			}
-
 			res.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -80,72 +79,122 @@ public class VisitDAO {
 		return records;
 	}
 	
-	public int deleteData(int id) {
-		int result = 0; // 저장이 됐는지 안됐는지 확인하기 위한 목적
+	public ArrayList<VisitVO> getAll() {
+		// SQL 질의문 작성
 		String sql = "";
-		sql += "DELETE FROM visit_t";
-		sql += " WHERE id = " + id; // WHERE 앞 띄어쓰기 필수
-		
+		sql += "SELECT * FROM visit_t";
+		sql += " ORDER BY id DESC";
+		ArrayList<VisitVO> records = new ArrayList<VisitVO>();
 		try {
-			result = this.stat.executeUpdate(sql); // 삭제 완료되면 1 반환
+			// SQL 질의문 실행
+			this.pstat = this.conn.prepareStatement(sql);
+			ResultSet res = this.pstat.executeQuery();
+			while(res.next()) {
+				records.add(new VisitVO(
+					res.getInt("id"), res.getString("author"),
+					res.getString("content"), res.getDate("create_date")
+				));
+			}
+			res.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return records;
+	}
+	
+	public int saveData(VisitVO data) {
+		/**
+		 * visit_t 테이블에 데이터를 추가하는 메서드
+		 *     - VisitVO 에는 추가할 데이터의 정보가 담겨 있다.
+		 *     - VisitVO 의 id 는 Database 에서 자동증가로 저장하기 때문에
+		 *       별도의 설정은 필요 없음
+		 *     - VisitVO 의 create_date 는 Database 의 SYSDATE 로
+		 *       저장하기 때문에 별도의 설정은 필요 없음
+		 */
+		int result = 0;    // 저장 처리 유무를 판별
+		String sql = "";
+		sql += "INSERT INTO visit_t (id, author, content, create_date)";
+		sql += "     VALUES(visit_seq.NEXTVAL, ?, ?, SYSDATE)";
 		
+		try {
+			this.pstat = this.conn.prepareStatement(sql);
+			this.pstat.setString(1, data.getAuthor());
+			this.pstat.setString(2, data.getContent());
+			
+			result = this.pstat.executeUpdate();    // 저장 처리가 완료 되면 1 반환
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 	
-	// prepareStatement? 다시 공부
 	public int updateData(VisitVO data) {
 		int result = 0;
 		String sql = "";
 		sql += "UPDATE visit_t";
-//		sql += "SET content = ?, author=? WHERE id=?";
-		sql += "SET content = " + data.getContent() + "WHERE id=" + data.getId();
+		sql += "   SET content=?";
+		sql += "     , author=?";
+		sql += " WHERE id=?";
 		
 		try {
-			result = this.stat.executeUpdate(sql);
+			this.pstat = this.conn.prepareStatement(sql);
+			this.pstat.setString(1, data.getContent());
+			this.pstat.setString(2, data.getAuthor());
+			this.pstat.setInt(3, data.getId());
+			
+			result = this.pstat.executeUpdate();    // 저장 처리가 완료 되면 1 반환
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
 	
-	private void connect() {
+	public int deleteData(int id) {
+		/**
+		 * visit_t 테이블의 데이터를 삭제하는 메서드
+		 *     - 삭제할 데이터의 id 만을 가지고 삭제 처리 한다.
+		 *     - visit_t 테이블에서 id 컬럼은 primary key 로 사용하기 때문에
+		 *       오직 하나의 데이터만 삭제 할 수 있다. 
+		 */
+		int result = 0;    // 삭제 처리 유무를 판별
+		String sql = "";
+		sql += "DELETE FROM visit_t";
+		sql += " WHERE id = ?";
+		
 		try {
-			// JDBC 드라이버 로딩
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("JDBC DRIVER 로딩 완료");
+			this.pstat = this.conn.prepareStatement(sql);
+			this.pstat.setInt(1, id);
 			
-			// 접속정보
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			String user = "web_admin";
-			String password = "web_admin";
-			
-			// DB 접속객체 생성, 접속시도
-			this.conn = DriverManager.getConnection(url, user, password);
-			System.out.println("Oracle DB 접속 완료");
-			
-			this.stat = this.conn.createStatement();
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			result = this.pstat.executeUpdate();    // 삭제 처리가 완료 되면 1 반환
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public void close() {
+		// 모든 JDBC 관련 생성 객체 정보 close()
+		try {
+			this.pstat.close();
+			this.conn.close();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void close() {
-		// 모든 JDBC 관련 생성 객체 정보 close
-		try {
-			this.stat.close();
-			this.conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

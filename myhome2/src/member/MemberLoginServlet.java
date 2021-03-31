@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @WebServlet("/login")
@@ -21,17 +22,16 @@ public class MemberLoginServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 맨 처음 이대로 실행하면 c.getName()안되니까 NullPointException 발생한다 해결방법 찾아야함
-		// 그래서 34줄에 c.getName() != null 추가해줌
 		
 		// 클라이언트가 전송한 쿠키 정보를 획득
 		Cookie[] cookies = request.getCookies();
 		
 		// login.jsp 페이지에서 사용할 아이디 초기값을 미리 생성
-		request.setAttribute("username", "");
+//		request.setAttribute("username", ""); 주석처리 이유 : 23줄에 말한 에러 없애려구
 		
 		// 클라이언트가 전송한 쿠키 정보중 로그인 아이디 쿠키 정보가 있는지 검사
 		for(Cookie c: cookies) {
-			if(c.getName() != null && c.getName().equals("username")) {
+			if(c.getName().equals("username")) {
 				// 로그인 아이디 쿠키 정보를 login.jsp 페이지에서 사용할 아이디 초기값으로 설정
 				request.setAttribute("username", c.getValue());
 				break;
@@ -51,22 +51,44 @@ public class MemberLoginServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String username = request.getParameter("username");
 		
-		Cookie[] cookies = request.getCookies();
-		if(remember != null) {
-			Cookie cookie = new Cookie("username", username);
-			cookie.setMaxAge(60*60*24);
-			response.addCookie(cookie);
-		} else { // 기억하기 체크박스가 해제되어 있는 경우 기존 아이디 정보를 저장한 쿠키 만료시간을 0으로 변경
-			for(Cookie c: cookies) {
-				if(c.getName().equals("username")) {
-					c.setMaxAge(0);
-					response.addCookie(c);
-					break;
+		// member_t 테이블에 저장되어 있는 username, password가 있는지 확인하는 절차 (password 암호화는 제외)
+		MemberDAO dao = new MemberDAO();
+		MemberVO member = dao.login(username, password);
+		HttpSession session = request.getSession();
+		
+		if(member.getUserid() != null) {
+			session.setAttribute("login", "true");
+			session.setAttribute("username", member.getUserid());
+			session.setAttribute("email", member.getEmail());
+			session.setAttribute("join_date", member.getJoindate());
+			
+			// 클라이언트가 전송한 쿠키 정보 획득
+			Cookie[] cookies = request.getCookies();
+			
+			// 체크박스 체크되어 있는 경우 아이디 정보를 저장하는 쿠키 생성
+			if(remember != null) {
+				Cookie cookie = new Cookie("username", username);
+				cookie.setMaxAge(60*60*24);
+				response.addCookie(cookie);
+			} else { // 기억하기 체크박스가 해제되어 있는 경우 기존 아이디 정보를 저장한 쿠키 만료시간을 0으로 변경
+				for(Cookie c: cookies) {
+					if(c.getName().equals("username")) {
+						c.setMaxAge(0);
+						response.addCookie(c);
+						break;
+					}
 				}
 			}
+			
+			response.sendRedirect(request.getContextPath());
+		} else {
+			// id 또는 password가 틀렸을때
+			RequestDispatcher dp = request.getRequestDispatcher("/WEB-INF/member/login.jsp");
+			dp.forward(request, response);
 		}
 		
-		response.sendRedirect(request.getContextPath());
+		
+		
 	}
 
 }

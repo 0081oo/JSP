@@ -1,6 +1,8 @@
 package member;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 // VO = Value Object 또는 DTO = Data Transger Object
 // 데이터베이스에 보내거나 받을 레코드 데이터에 대해 객체로 정의하여 자바에서 다루기 위해 정의
@@ -10,6 +12,8 @@ public class MemberVO {
 	private String email = null;
 	private Date joindate = null;
 	
+	public MemberVO() {}
+	
 	public MemberVO (String userid, String password, String email, Date joindate) {
 		this.userid = userid;
 		this.password = password;
@@ -17,6 +21,13 @@ public class MemberVO {
 		this.joindate = joindate;
 	}
 
+	public void setRecord(ResultSet result) throws SQLException{
+		this.userid = result.getString("userid");
+		this.password = result.getString("password");
+		this.email = result.getString("email");
+		this.joindate = result.getDate("join_date");
+	}
+	
 	public String getUserid() {
 		return userid;
 	}

@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	String logined = "";
+	if(session.getAttribute("login") != null) {
+		logined = (String)session.getAttribute("login");
+	}  
+%>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="<%=request.getContextPath() %>">Home</a>
@@ -8,7 +14,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item mr-auto"> <!-- mr-auto가 뭘 -->
                 <a class="nav-link" href="<%=request.getContextPath() %>/visit">방문록</a>
             </li>
             <li class="nav-item">
@@ -25,6 +31,32 @@
             %>
             </li>
         </ul>
+        <%
+			if(logined.equals("true")) {
+		%>	
+				<ul class="navbar-nav">
+		        	<li class="nav-item">
+		                <a class="nav-link" href="<%=request.getContextPath() %>/info">회원정보</a>
+		            </li>
+		            <li class="nav-item">
+		                <a class="nav-link" href="<%=request.getContextPath() %>/logout">로그아웃</a>
+		            </li>
+		        </ul>
+		<%
+			} else {
+		%>
+				<ul class="navbar-nav">
+		        	<li class="nav-item">
+		                <a class="nav-link" href="<%=request.getContextPath() %>/join">회원가입</a>
+		            </li>
+		            <li class="nav-item">
+		                <a class="nav-link" href="<%=request.getContextPath() %>/login">로그인</a>
+		            </li>
+		        </ul>
+		<%
+			}
+		%>
+        
     </div>
 </nav>
 

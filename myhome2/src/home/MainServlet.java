@@ -31,18 +31,27 @@ public class MainServlet extends HttpServlet {
 		 *          - 오늘의 팝업 메시지를 계속 띄우느냐/띄우지 않느냐.
 		 *          - 이전에 로그인을 한 계정명을 기억하느냐/기억하지 않냐.
 		 *          - 웹 페이지 테마를 어떠한 테마로 설정했느냐. 등등등...
+		 *          
+		 *  세션(Session)
+		 *  	쿠키 처럼 서버가 클라이언트에 세션 정보를 저장을 하나 이 세션 정보는 암호화된 세션 ID이고 
+		 *  	이 세션 ID 에는 어떠한 개인정보도 포함되어 있지 않다.
+		 *  	이 세션 ID 가 서버에 전달이 되면 서버에 저장되어 있는 동일한 세션 ID 의 정보를 획득하여 
+		 *  	이전 사용자에 대한 기록을 확인할 수 있다.
 		 */
 		Cookie[] c = request.getCookies();
-		for(Cookie ck: c) {
-			if(!ck.getName().equals("name")) {
-				// 쿠키 생성                  쿠키이름  쿠키값
-				Cookie cookie = new Cookie("name", "value");
-				cookie.setMaxAge(60*60*24);    // 클라이언트에 저장된 쿠키 정보가 유지되는 시간
-				// 클라이언트에 보낼 응답 객체에 생성한 쿠키를 담는다.
-				response.addCookie(cookie);
-			} else if(ck.getName().equals("name")) {				
-				System.out.println("쿠키명 : " + ck.getName());
-				System.out.println("쿠키값 : " + ck.getValue());
+		
+		if(c != null) { // 맨 처음 실행할때 (MemberLoginServlet 23줄 참고)
+			for(Cookie ck: c) {
+				if(!ck.getName().equals("name")) {
+					// 쿠키 생성                  쿠키이름  쿠키값
+					Cookie cookie = new Cookie("name", "value");
+					cookie.setMaxAge(60*60*24);    // 클라이언트에 저장된 쿠키 정보가 유지되는 시간
+					// 클라이언트에 보낼 응답 객체에 생성한 쿠키를 담는다
+					response.addCookie(cookie);
+				} else if(ck.getName().equals("name")) {				
+					System.out.println("쿠키명 : " + ck.getName());
+					System.out.println("쿠키값 : " + ck.getValue());
+				}
 			}
 		}
 		

@@ -32,12 +32,12 @@ public class VisitUpdateServlet extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("id"));
 		String author = request.getParameter("author");
-		String context = request.getParameter("context");
+		String content = request.getParameter("content");
 		
 		VisitDAO visit = new VisitDAO();
 		VisitVO data = visit.getRecord(id);
 		data.setAuthor(author);
-		data.setContent(context);
+		data.setContent(content);
 		visit.updateData(data);
 		
 		response.sendRedirect("./visit");
