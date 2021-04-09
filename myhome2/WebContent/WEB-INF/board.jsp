@@ -67,6 +67,7 @@ function sendAJAX() {
 		},
 		success: function(data) {
 			alert("ajax 통신 완료" + data.res);
+			$("#res").val(data.res);
 		}
 			
 	});

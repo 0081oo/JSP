@@ -1,6 +1,8 @@
 package ajax;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -27,8 +29,9 @@ public class AjaxTempListServlet extends HttpServlet {
 		// 전달 받은 데이터에 대한 처리 로직 구현 끝
 		
 		// 처리 결과를 JSON 형식으로 클라이언트에 전
-		response.setContentType("application/json");
-		ServletOutputStream out = response.getOutputStream();
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = response.getWriter();
 		out.print("{\"res\" : \"complete\"}");
 	}
 
