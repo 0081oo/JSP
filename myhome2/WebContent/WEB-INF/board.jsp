@@ -66,7 +66,7 @@ function sendAJAX() {
 			value : "send data"
 		},
 		success: function(data) {
-			alert("ajax 통신 완료");
+			alert("ajax 통신 완료" + data.res);
 		}
 			
 	});
