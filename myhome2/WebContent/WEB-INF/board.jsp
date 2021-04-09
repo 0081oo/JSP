@@ -12,6 +12,10 @@
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/jquery/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+	<div>
+		<button type="button" onclick="sendAJAX();">ajax 전송</button>
+	</div>
+	
     <header>
         <%@ include file="/WEB-INF/module/top_nav.jsp" %>
     </header>
@@ -50,4 +54,22 @@
         </table>
     </section>
 </body>
+<script type="text/javascript">
+function sendAJAX() {
+	$.ajax({
+		/* 데이터를 전송할 서버 url 주소 */
+		url: "<%=request.getContextPath() %>/ajax/board",
+		type: "get",
+		datatype: "json",
+		data: {
+			name : "Ajax",
+			value : "send data"
+		},
+		success: function(data) {
+			alert("ajax 통신 완료");
+		}
+			
+	});
+}
+</script>
 </html>
