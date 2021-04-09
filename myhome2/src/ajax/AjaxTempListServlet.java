@@ -18,6 +18,7 @@ public class AjaxTempListServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		String name = request.getParameter("name");
 		String value = request.getParameter("value");
 		
@@ -28,7 +29,7 @@ public class AjaxTempListServlet extends HttpServlet {
 		// 처리 결과를 JSON 형식으로 클라이언트에 전
 		response.setContentType("application/json");
 		ServletOutputStream out = response.getOutputStream();
-		out.print("{\"res\" : \"처리완료\"}");
+		out.print("{\"res\" : \"complete\"}");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
