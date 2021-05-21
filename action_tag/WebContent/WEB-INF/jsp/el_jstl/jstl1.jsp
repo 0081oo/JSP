@@ -73,5 +73,33 @@
 			<li>${loop.index} -${loop.count} - ${i }</li>
 		</c:forEach>
 	</ul>
+	
+	<hr>
+	
+	<table border="1" style="border-collapse: collapse;">
+		<c:forEach var="i" begin="1" end="9">
+			<tr>
+				<c:forEach var="j" begin="1" end="9">
+					<td>${i } x ${j } = ${i*j }</td>
+				</c:forEach>
+			</tr>
+		</c:forEach>
+	</table>
+	
+	<hr>
+	
+	<ul>
+		<c:set var="phone" value="010-1122-3344">
+		<c:forTokens var="i" items="${phone }" delims="-">
+			<li>${i }</li>
+		</c:forTokens>
+	</ul>
+	
+	<h1>URL 생성</h1>
+	<c:url var="url1" value="/jstl/core">
+		<c:param name="x" value="10" />
+		<c:param name name="y" value="20" />
+	</c:url>
+	<h4><a href="${url }">10+20 = ${param.x + param.y }</a></h4>
 </body>
 </html>
