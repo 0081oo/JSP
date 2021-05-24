@@ -60,6 +60,23 @@
 	}
 	
 	function send() {
+		var username = document.getElementById("id_username");
+		if(username.value == "" || username.value == undefined) {
+			alert("이름을 입력하세요.");
+			username.focus();
+			return;
+		}
+		
+		if(nickname_check == "" || nickname_check == undefined) {
+			alert("닉네임을 입력하세요.");
+			document.getElementById("id_nickname").focus();
+			return;
+		} else if (nickname_check != "사용 가능!") {
+			alert("해당 닉네임으로는 가입할 수 없습니다.");
+			document.getElementById("id_nickname").focus();
+			return;
+		}
+		
 		var email_check = document.getElementById("email_nickname_res").innerText;
 		var nickname_check = document.getElementById("email_check_res").innerText;
 		
@@ -73,13 +90,17 @@
 			return;
 		}
 		
-		if(nickname_check == "" || nickname_check == undefined) {
-			alert("닉네임을 입력하세요.");
-			document.getElementById("id_nickname").focus();
+		var password = document.getElementById("id_password");
+		if(password.value == "" || password.value == undefined) {
+			alert("패스워드를 입력하세요.");
+			password.focus();
 			return;
-		} else if (nickname_check != "사용 가능!") {
-			alert("해당 닉네임으로는 가입할 수 없습니다.");
-			document.getElementById("id_nickname").focus();
+		}
+		
+		var age = document.getElementById("id_age");
+		if(age.value == "" || age.value == undefined) {
+			alert("나이를 입력하세요.");
+			agee.focus();
 			return;
 		}
 		
@@ -112,8 +133,8 @@
 		</div>
 		<div>
 			<label>성별</label>
-			<input id="id_gender_m" type="radio" name="gender" checked><label for="id_gender_m"> 남</label>
-			<input id="id_gender_w" type="radio" name="gender" checked><label for="id_gender_w"> 여</label>
+			<input id="id_gender_m" type="radio" name="gender" value="m" checked><label for="id_gender_m"> 남</label>
+			<input id="id_gender_w" type="radio" name="gender" value="w" checked><label for="id_gender_w"> 여</label>
 		</div>
 		<div>
 			<label for="id_age">나이</label>

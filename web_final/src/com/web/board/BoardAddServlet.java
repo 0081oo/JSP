@@ -1,41 +1,81 @@
 package com.web.board;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class BoardAddServlet
- */
-@WebServlet("/BoardAddServlet")
+import com.web.account.db.AccountVO;
+import com.web.board.db.BoardDAO;
+import com.web.board.db.BoardTypeVO;
+import com.web.board.db.BoardVO;
+
+@WebServlet("/board/add")
 public class BoardAddServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public BoardAddServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		// 로그인한 사용자만 글을 쓸 수 있다
+		HttpSession session = request.getSession();
+		if(session.getAttribute("logined") != null) {
+			if((boolean)session.getAttribute("logined")) {
+				ArrayList<BoardTypeVO> boardtypes = new ArrayList<BoardTypeVO>();
+				
+				BoardDAO dao = new BoardDAO();
+				boardtypes = (ArrayList<BoardTypeVO>) dao.getBoardTypes();
+				dao.close();
+				
+				request.setAttribute("boardtypes", boardtypes);
+				
+				String path = "/WEB-INF/jsp/board/add.jsp";
+				RequestDispatcher dp = request.getRequestDispatcher(path);
+				dp.forward(request, response);
+			} else {
+				response.sendRedirect(request.getContextPath() + "/account/login");
+			}
+			
+		} else {
+			response.sendRedirect(request.getContextPath() + "/account/login");
+		}
+		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		HttpSession session = request.getSession();
+		if(session.getAttribute("logined") != null) {
+			if((boolean)session.getAttribute("logined")) {
+				String title = request.getParameter("title");
+				String btype = request.getParameter("btype");
+				String contents = request.getParameter("contents");
+				String nodel = request.getParameter("nodel");
+				
+				BoardVO data = new BoardVO();
+				data.setTitle(title);
+				data.setBtype(btype);
+				data.setAid(((AccountVO)session.getAttribute("account")).getId());
+				data.setContents(contents);
+				data.setNodel(nodel == null ? "n" : "y");
+				
+				BoardDAO dao = new BoardDAO();
+				dao.insert(data);
+				dao.close();
+				
+			} else {
+				response.sendRedirect(request.getContextPath() + "/account/login");
+			}
+		} else {
+			response.sendRedirect(request.getContextPath() + "/account/login");
+		}
 	}
 
 }

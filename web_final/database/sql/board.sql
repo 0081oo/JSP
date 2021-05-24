@@ -15,6 +15,10 @@ ALTER TABLE board_type MODIFY name CONSTRAINT board_type_name_NN NOT NULL;
 COMMENT ON COLUMN board_type.id IS '게시판 구분 식별 번호';
 COMMENT ON COLUMN board_type.name IS '게시판 종류';
 
+INSERT INTO board_type VALUES(1, '자유 게시판');
+INSERT INTO board_type VALUES(2, '유머 게시판');
+INSERT INTO board_type VALUES(3, '정치/사회 게시판');
+
 CREATE SEQUENCE board_Seq NOCACHE;
 CREATE TABLE board(
 	id NUMBER,
@@ -78,3 +82,7 @@ CREATE TABLE comment(
 
 ALTER TABLE comment ADD CONSTRAINT comment_bid_FK FOREIGN KEY(bid) REFERENCES board(id);
 ALTER TABLE comment ADD CONSTRAINT comment_aid_FK FOREIGN KEY(aid) REFERENCES account(id);
+
+SELECT DBMS_LOB.SUBSTR(contents, DBMS_LOB.GETLENGTH(contents)) as contents FROM board;
+SELECT DBMS_LOB.SUBSTR(contents, 3) as contents FROM board;
+SELECT TO_CHAR(contents) as contents FROM board;
