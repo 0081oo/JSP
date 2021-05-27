@@ -86,3 +86,21 @@ ALTER TABLE comment ADD CONSTRAINT comment_aid_FK FOREIGN KEY(aid) REFERENCES ac
 SELECT DBMS_LOB.SUBSTR(contents, DBMS_LOB.GETLENGTH(contents)) as contents FROM board;
 SELECT DBMS_LOB.SUBSTR(contents, 3) as contents FROM board;
 SELECT TO_CHAR(contents) as contents FROM board;
+
+
+SELECT a.id,
+	a.btype,
+	b.name AS bname,
+	a.aid,
+	a.title,
+	a.cdate,
+	a.vcnt
+FROM board a
+JOIN board_type b
+	ON a.btype = b.id
+JOIN account c
+	ON a.aid = c.id;
+
+
+SELECT * FROM board_type;
+SELECT * FROM account;

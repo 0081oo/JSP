@@ -31,7 +31,7 @@
 				} else {
 					document.getElementById("email_check_res").innerText = "이미 사용중인 이메일 주소";
 				}
-			},
+			}
 			/* error: function(data){
 				alert("통신확인[에러]");
 			} */
