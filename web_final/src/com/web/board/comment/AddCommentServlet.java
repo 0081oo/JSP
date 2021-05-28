@@ -6,36 +6,43 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class AddCommentServlet
- */
-@WebServlet("/AddCommentServlet")
+import com.web.account.db.AccountVO;
+import com.web.board.comment.db.CommentDAO;
+import com.web.board.comment.db.CommentVO;
+
+@WebServlet("/ajax/comment/add")
 public class AddCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public AddCommentServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		HttpSession session = request.getSession();
+		AccountVO account = (AccountVO)session.getAttribute("account");
+		String bid =request.getParameter("bid");
+		String comment = request.getParameter("comment");
+		
+		CommentVO data = new CommentVO();
+		data.setBid(bid);
+		data.setContents(comment);
+		data.setAid(account.getId());
+		
+		
+		CommentDAO dao = new CommentDAO();
+//		if(dao.insert(data)) {
+//			// 저장 성공
+//		} else {
+//			// 저장 실패
+//		}
+//		dao.close();
 	}
 
 }
