@@ -1,5 +1,7 @@
 package com.web.account.db;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +11,11 @@ import java.sql.Statement;
 import javax.activation.DataSource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class AccountDAO {
 	Connection conn = null;
@@ -31,6 +38,28 @@ public class AccountDAO {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	// mybatis 에 사용된 함수 - 쿼리 조회
+	public AccountVO select() {
+		AccountVO res = new AccountVO();
+		SqlSession sees = null;
+		try {
+			String resource = "resources/mybatis-config.xml";
+			InputStream is = Resources.getResourceAsStream(resource);
+			SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+			SqlSessionFactory factory = builder.build(is);
+			sees = factory.openSession();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		res = sees.selectOne(""); // SELECT 해서 하나의 결과만 반환시키겠다
+		
+		
+		
+		return res;
 	}
 	
 	/*
