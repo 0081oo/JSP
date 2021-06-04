@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import com.web.account.db.AccountDAO;
+import com.web.account.db.AccountMybatis;
 
 @WebServlet("/ajax/checker/nickname")
 public class NicknameCheckServlet extends HttpServlet {
@@ -23,9 +24,12 @@ public class NicknameCheckServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String nickname = request.getParameter("nickname");
-		AccountDAO dao = new AccountDAO();
-		boolean res = dao.usedEmail(nickname);
-		dao.close(); 
+//		AccountDAO dao = new AccountDAO();
+//		boolean res = dao.usedEmail(nickname);
+//		dao.close(); 
+		// 여기는 mubatis 사용한거. 위 3줄은 dao사용한거
+		AccountMybatis dao = new AccountMybatis();
+		boolean res = dao.usedNickname(nickname);
 		
 		response.setContentType("application/json; charset=utf-8");
 		PrintWriter out = response.getWriter();

@@ -4,9 +4,22 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
  <mapper namespace="accountMapper">
+ 	<resultMap id="accountMap" type="account">
+ 		<id property="id" column="id" />
+ 		<result property="nickname" column="nickname" />
+ 		<result property="username" column="username" />
+ 	</resultMap>
  	
- 	<select id="" resultType="com.web.account.vo.AccountVO">
- 		SELECT * FROM account WHERE id=1
+ 	<select id="selectAccount" parameterType="account" resultType="account"> <!-- config에서 정의한 별칭 (Alias) -->
+ 		SELECT * FROM account WHERE id = #{id}
+ 	</select>
+ 	
+ 	<select id="selectAccount" parameterType="account" resultType="accountMap">
+ 		SELECT nickname AS nick, username AS name FROM account WHERE id = #{id}
+ 	</select>
+ 	
+ 	<select id="checkNickname" parameterType="string" resultType="_int">
+ 		SELECT * FROM account WHERE nickname = #{nickname}
  	</select>
  	
  </mapper>

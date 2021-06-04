@@ -26,12 +26,15 @@ public class MainServlet extends HttpServlet {
 		// mybatis 테스트하려고 작성한 코드 - 시작
 		// 로그인한 사용자 게정 정보를 마이바티스로 조회하기
 		HttpSession session = request.getSession();
-		if((boolean)session.getAttribute("logined")) {
+		if(session.getAttribute("logined") != null) {
 			if(((AccountVO)session.getAttribute("account")).getId() > 0) {
 				AccountDAO dao = new AccountDAO();
-				AccountVO data = dao.select();
+				AccountVO data = new AccountVO();
+				data.setId(((AccountVO)session.getAttribute("account")).getId());
+				dao.select(data);
 				System.out.println("로그인 계정 : " + data.getNickname());
 			}
+			
 		}
 		// mybatis 테스트하려고 작성한 코드 - 끝
 		

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.activation.DataSource;
 import javax.naming.InitialContext;
@@ -41,25 +42,27 @@ public class AccountDAO {
 	}
 	
 	// mybatis 에 사용된 함수 - 쿼리 조회
-	public AccountVO select() {
-		AccountVO res = new AccountVO();
-		SqlSession sees = null;
+	public AccountVO select(AccountVO data) {
+		SqlSession sess = null;
 		try {
 			String resource = "resources/mybatis-config.xml";
 			InputStream is = Resources.getResourceAsStream(resource);
 			SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 			SqlSessionFactory factory = builder.build(is);
-			sees = factory.openSession();
+			sess = factory.openSession();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		res = sees.selectOne(""); // SELECT 해서 하나의 결과만 반환시키겠다
+		AccountVO d1 = sess.selectOne("accountMapper.selectAccount", data); // SELECT 해서 하나의 결과만 반환시키겠다
+		AccountVO d2 = sess.selectOne("accountMapper.selectAccountMap", data);
+		List<AccountVO> d3 = sess.selectList("accountMapper.selectAccount", data);
 		
+		System.out.println(d1.getNickname() + " | " + d2.getNickname());
+		System.out.println(d1.getAge() + " | " + d2.getAge());
 		
-		
-		return res;
+		return data;
 	}
 	
 	/*
