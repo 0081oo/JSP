@@ -15,8 +15,17 @@
 		<!-- post -->
 		<li>
 			<c:url var="url1" value="/param/post1" />
-			<form action="${url1 }" method="post"> <!-- 여기서 get쓰면 get으로 전송됨 -->
+			<form action="${url1 }" method="post"> 
 				<input type="text" name="name">
+				<button type="submit">POST 전송</button>
+			</form>
+		</li>
+		<li><a href="/min/param/get2?name=홍길동&age=30">name=홍길동&number=10으로 보내고 받기</a></li>
+		<li>
+			<c:url var="url2" value="/param/post2" />
+			<form action="${url2 }" method="post"> 
+				<input type="text" name="name" placeholder="name">
+				<input type="number" name="number" placeholder="number">
 				<button type="submit">POST 전송</button>
 			</form>
 		</li>

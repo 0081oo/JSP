@@ -31,6 +31,23 @@
 	 -->
 	<beans:bean name="/hello" class="com.web.min.controller.sp1.HelloController"></beans:bean>
 	
+	<!-- 
+		데이터베이스 연결 객체를 빈(bean)에 등록한다. (id는 원하는대로 지정하면 됨)
+	 -->
+	 <beans:bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	 	<beans:property name="driverClassName" value="oracle.jdbc.OracleDriver"></beans:property>
+		<beans:property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></beans:property>
+		<beans:property name="username" value="webfinal"></beans:property>
+		<beans:property name="password" value="webfinal"></beans:property>
+	 </beans:bean>
 	
+	<!-- 
+		빈에 등록된 데이터베이스 연결 객체를 JdbcTemplate 에 등록(주입:DI-Dependency Injection) 한다
+	 -->
+	 <beans:bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	 	<beans:property name="dataSource" ref="dataSource"></beans:property>
+	 </beans:bean>
+	 
+	 
 	
 </beans:beans>
