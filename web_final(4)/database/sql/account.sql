@@ -41,7 +41,7 @@ COMMENT ON COLUMN account.joindate IS '사용자 가입일';
 COMMENT ON COLUMN account.logindate IS '사용자 접속일';
 COMMENT ON COLUMN account.expiredate IS '사용자 탈퇴일';
 
-INSERT INTO account(id, nickname, username, password, email, gender, age) VALUE(account_seq.NEXTVAL, '관리자', 'admin', 'admin', 'admin@sample.com', 'm', 30);
+INSERT INTO account(id, nickname, username, password, email, gender, age) VALUES(account_seq.NEXTVAL, '관리자', 'admin', 'admin', 'admin@sample.com', 'm', 30);
 
 SELECT * FROM account
      WHERE email = 'hong@example.com'

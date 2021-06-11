@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.web.min.controller.sp3.ParameterVO;
 import com.web.min.dto.account.AccountDTO;
 
-@Controller
+//@Controller 새로 만든거랑 충돌나서 잠깐 주석
 @RequestMapping(value="/account")
 public class AccountController {
 	
