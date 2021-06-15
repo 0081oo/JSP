@@ -19,6 +19,31 @@ public class AccountController {
 	@Autowired	// 자동으로 AccountService 객체 생성하고 필요한 것들 주입
 	AccountService account;
 	
+	@RequestMapping(value = "/join", method = RequestMethod.POST)
+	public String join(Model m, @ModelAttribute AccountDTO dto) throws Exception {
+		String forward = "";
+		
+		// 서비스의 join method 호출
+		boolean result = account.join(dto);
+		
+		if(result) {
+			// 가입 성공했을 때 로그인 페이지로 리다이렉트
+			forward = "redirect:/account/login";
+		} else {
+			// 가입 실패했을 때 회원가입 페이지 재전송
+			m.addAttribute("data", dto);
+			m.addAttribute(forward);
+			forward = "account/join";
+		}
+		
+		return forward;
+	}
+	
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String login() throws Exception {
+		
+	}
+	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String userList(Model m) throws Exception {
 		List<AccountDTO> datas = account.accountInfoList();
